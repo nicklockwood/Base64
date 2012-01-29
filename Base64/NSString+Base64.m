@@ -1,7 +1,7 @@
 //
 //  NSString+Base64.m
 //
-//  Version 1.0
+//  Version 1.0.1
 //
 //  Created by Nick Lockwood on 12/01/2012.
 //  Copyright (C) 2012 Charcoal Design
@@ -42,9 +42,9 @@
     {
         NSString *result = [[self alloc] initWithData:data encoding:NSUTF8StringEncoding];
         
-    #if !__has_feature(objc_arc)
+#if !__has_feature(objc_arc)
         [result autorelease];
-    #endif
+#endif
         
         return result;
     }
@@ -61,6 +61,16 @@
 {
     NSData *data = [self dataUsingEncoding:NSUTF8StringEncoding allowLossyConversion:YES];
     return [data base64EncodedString];
+}
+
+- (NSString *)base64DecodedString
+{
+    return [NSString stringWithBase64EncodedString:self];
+}
+
+- (NSData *)base64DecodedData
+{
+    return [NSData dataWithBase64EncodedString:self];
 }
 
 @end

@@ -24,12 +24,12 @@
     //decode
     NSData *outputData = [NSData dataWithBase64EncodedString:encodedString];
     NSString *outputString = [[NSString alloc] initWithData:outputData encoding:NSUTF8StringEncoding]; 
-	NSAssert([outputString isEqualToString:inputString], @"OutputEqualsInput test failed");
+    NSAssert([outputString isEqualToString:inputString], @"OutputEqualsInput test failed");
 }
 
 - (void)testWrappedInput
 {
-	NSInteger wrapWidth = 8; // must be multiple of 4
+    NSInteger wrapWidth = 8; // must be multiple of 4
     
     //set up data
     NSString *inputString = @"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque ac quam non ipsum vestibulum porta ac id ipsum. Morbi sed enim purus. Fusce elementum dui sed nisi tincidunt feugiat interdum felis malesuada. Sed ipsum enim, mollis id adipiscing eu, eleifend eget neque. Nulla quis nunc a nunc pellentesque adipiscing nec non leo. Morbi ut nisi sem, in cursus erat. Praesent eu nibh justo, nec suscipit nisl. Suspendisse eget elit tellus, at rhoncus urna. Quisque imperdiet lobortis sagittis. Duis congue venenatis faucibus. Sed fermentum, ligula venenatis molestie mattis, sem justo ultrices turpis, mattis condimentum quam nunc eu purus. Nulla facilisi. Donec sodales nulla sed diam iaculis quis suscipit quam rhoncus. Nam tincidunt dui sit amet tortor posuere non interdum felis venenatis. In sollicitudin cursus felis vitae convallis. Etiam justo elit, vestibulum sit amet fringilla vel, vestibulum et ante.";
@@ -46,31 +46,31 @@
     //decode
     NSData *outputData = [NSData dataWithBase64EncodedString:encodedString];
     NSString *outputString = [[NSString alloc] initWithData:outputData encoding:NSUTF8StringEncoding]; 
-	NSAssert([outputString isEqualToString:inputString], @"WrappedInput test failed");
+    NSAssert([outputString isEqualToString:inputString], @"WrappedInput test failed");
 }
 
 - (void)testNilInput
 {
     NSData *data = [NSData dataWithBase64EncodedString:nil];
-	NSAssert(data == nil, @"NilInput test failed");
+    NSAssert(data == nil, @"NilInput test failed");
 }
 
 - (void)testInvalidInput
 {
     NSData *data = [NSData dataWithBase64EncodedString:@"!!!!!!"];
-	NSAssert(data == nil, @"InvalidInput test failed");
+    NSAssert(data == nil, @"InvalidInput test failed");
 }
 
 - (void)testShortInput
 {
     NSString *string = [[@"" dataUsingEncoding:NSUTF8StringEncoding] base64EncodedString];
-	NSAssert(string == nil, @"InvalidInput test failed");
+    NSAssert(string == nil, @"InvalidInput test failed");
     
     string = [[@"A" dataUsingEncoding:NSUTF8StringEncoding] base64EncodedString];
-	NSAssert([string isEqualToString:@"QQ=="], @"InvalidInput test failed");
+    NSAssert([string isEqualToString:@"QQ=="], @"InvalidInput test failed");
     
     string = [[@"AB" dataUsingEncoding:NSUTF8StringEncoding] base64EncodedString];
-	NSAssert([string isEqualToString:@"QUI="], @"InvalidInput test failed");
+    NSAssert([string isEqualToString:@"QUI="], @"InvalidInput test failed");
 }
 
 - (void)testEdgeCase1
@@ -86,7 +86,7 @@
     //decode
     NSData *outputData = [NSData dataWithBase64EncodedString:encodedString];
     NSString *outputString = [[NSString alloc] initWithData:outputData encoding:NSUTF8StringEncoding]; 
-	NSAssert([outputString isEqualToString:inputString], @"EdgeCase1 test failed");
+    NSAssert([outputString isEqualToString:inputString], @"EdgeCase1 test failed");
 }
 
 - (void)testEdgeCase2
@@ -102,7 +102,7 @@
     //decode
     NSData *outputData = [NSData dataWithBase64EncodedString:encodedString];
     NSString *outputString = [[NSString alloc] initWithData:outputData encoding:NSUTF8StringEncoding]; 
-	NSAssert([outputString isEqualToString:inputString], @"EdgeCase2 test failed");
+    NSAssert([outputString isEqualToString:inputString], @"EdgeCase2 test failed");
 }
 
 @end

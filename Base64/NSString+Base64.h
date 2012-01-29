@@ -1,7 +1,7 @@
 //
 //  NSString+Base64.h
 //
-//  Version 1.0
+//  Version 1.0.1
 //
 //  Created by Nick Lockwood on 12/01/2012.
 //  Copyright (C) 2012 Charcoal Design
@@ -37,5 +37,7 @@
 + (NSString *)stringWithBase64EncodedString:(NSString *)string;
 - (NSString *)base64EncodedStringWithWrapWidth:(NSUInteger)wrapWidth;
 - (NSString *)base64EncodedString;
+- (NSString *)base64DecodedString;
+- (NSData *)base64DecodedData;
 
 @end

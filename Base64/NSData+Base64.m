@@ -1,7 +1,7 @@
 //
 //  NSData+Base64.m
 //
-//  Version 1.0
+//  Version 1.0.1
 //
 //  Created by Nick Lockwood on 12/01/2012.
 //  Copyright (C) 2012 Charcoal Design
@@ -59,8 +59,8 @@
     int accumulator = 0;
     long long outputLength = 0;
     unsigned char accumulated[4];
-	for (long long i = 0; i < inputLength; i++)
-	{
+    for (long long i = 0; i < inputLength; i++)
+    {
         unsigned char decoded = lookup[inputBytes[i] & 0x7F];
         if (decoded != 99)
         {
@@ -73,7 +73,7 @@
             }
             accumulator = (accumulator + 1) % 4;
         }
-	}
+    }
     
     //handle left-over data
     if (accumulator > 0) outputBytes[outputLength] = (accumulated[0] << 2) | (accumulated[1] >> 4);
@@ -101,13 +101,13 @@
     
     long long i;
     long long outputLength = 0;
-	for (i = 0; i < inputLength - 2; i += 3)
-	{
-		outputBytes[outputLength++] = lookup[(inputBytes[i] & 0xFC) >> 2];
+    for (i = 0; i < inputLength - 2; i += 3)
+    {
+        outputBytes[outputLength++] = lookup[(inputBytes[i] & 0xFC) >> 2];
         outputBytes[outputLength++] = lookup[((inputBytes[i] & 0x03) << 4) | ((inputBytes[i + 1] & 0xF0) >> 4)];
         outputBytes[outputLength++] = lookup[((inputBytes[i + 1] & 0x0F) << 2) | ((inputBytes[i + 2] & 0xC0) >> 6)];
         outputBytes[outputLength++] = lookup[inputBytes[i + 2] & 0x3F];
-		
+        
         //add line break
         if (wrapWidth && (outputLength + 2) % (wrapWidth + 2) == 0)
         {
@@ -123,7 +123,7 @@
         outputBytes[outputLength++] = lookup[(inputBytes[i] & 0xFC) >> 2];
         outputBytes[outputLength++] = lookup[((inputBytes[i] & 0x03) << 4) | ((inputBytes[i + 1] & 0xF0) >> 4)];
         outputBytes[outputLength++] = lookup[(inputBytes[i + 1] & 0x0F) << 2];
-        outputBytes[outputLength++] =	'=';
+        outputBytes[outputLength++] =   '=';
     }
     else if (i == inputLength - 1)
     {
@@ -133,7 +133,7 @@
         outputBytes[outputLength++] = '=';
         outputBytes[outputLength++] = '=';
     }
-	
+    
     //truncate data to match actual output length
     outputBytes = realloc(outputBytes, outputLength);
     NSString *result = [[NSString alloc] initWithBytesNoCopy:outputBytes length:outputLength encoding:NSASCIIStringEncoding freeWhenDone:YES];
