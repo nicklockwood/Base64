@@ -1,7 +1,7 @@
 //
 //  NSData+Base64.m
 //
-//  Version 1.0.1
+//  Version 1.0.2
 //
 //  Created by Nick Lockwood on 12/01/2012.
 //  Copyright (C) 2012 Charcoal Design
@@ -58,7 +58,7 @@
 
     int accumulator = 0;
     long long outputLength = 0;
-    unsigned char accumulated[4];
+    unsigned char accumulated[] = {0, 0, 0, 0};
     for (long long i = 0; i < inputLength; i++)
     {
         unsigned char decoded = lookup[inputBytes[i] & 0x7F];

@@ -1,7 +1,7 @@
 //
 //  NSString+Base64.h
 //
-//  Version 1.0.1
+//  Version 1.0.2
 //
 //  Created by Nick Lockwood on 12/01/2012.
 //  Copyright (C) 2012 Charcoal Design
