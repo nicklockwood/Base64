@@ -7,9 +7,9 @@ Base64 is a set of categories that provide methods to encode and decode data as 
 Supported OS & SDK Versions
 -----------------------------
 
-* Supported build target - iOS 5.1 / Mac OS 10.7 (Xcode 4.3, Apple LLVM compiler 3.0)
-* Earliest supported deployment target - iOS 4.3 / Mac OS 10.6
-* Earliest compatible deployment target - iOS 3.0 / Mac OS 10.6
+* Supported build target - iOS 6.0 / Mac OS 10.8 (Xcode 4.5, Apple LLVM compiler 4.1)
+* Earliest supported deployment target - iOS 5.0 / Mac OS 10.7
+* Earliest compatible deployment target - iOS 4.3 / Mac OS 10.6
 
 NOTE: 'Supported' means that the library has been tested with this version. 'Compatible' means that the library should work on this iOS version (i.e. it doesn't rely on any unavailable SDK features) but is no longer being tested for compatibility and may require tweaking or bug fixes to run correctly.
 
@@ -17,7 +17,9 @@ NOTE: 'Supported' means that the library has been tested with this version. 'Com
 ARC Compatibility
 ------------------
 
-Base64 can automatically detect if your project is using ARC or not, and output the correct code using conditional compilation. It will therefore work correctly in either ARC or non-ARC projects without modification.
+As of version 1.1, Base64 requires ARC. If you wish to use Base64 in a non-ARC project, just add the -fobjc-arc compiler flag to the Base64.m file. To do this, go to the Build Phases tab in your target settings, open the Compile Sources group, double-click Base64.m in the list and type -fobjc-arc into the popover.
+
+If you wish to convert your whole project to ARC, comment out the #error line in Base64.m, then run the Edit > Refactor > Convert to Objective-C ARC... tool in Xcode and make sure all files that you wish to use ARC for (including Base64.m) are checked.
 
 
 Thread Safety

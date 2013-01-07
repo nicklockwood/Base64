@@ -1,7 +1,7 @@
 //
-//  NSData+Base64.m
+//  Base64.m
 //
-//  Version 1.0.2
+//  Version 1.1
 //
 //  Created by Nick Lockwood on 12/01/2012.
 //  Copyright (C) 2012 Charcoal Design
@@ -30,7 +30,14 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 
-#import "NSData+Base64.h"
+#import "Base64.h"
+
+
+#import <Availability.h>
+#if !__has_feature(objc_arc)
+#error This library requires automatic reference counting
+#endif
+
 
 @implementation NSData (Base64)
 
@@ -134,20 +141,62 @@
         outputBytes[outputLength++] = '=';
     }
     
-    //truncate data to match actual output length
-    outputBytes = realloc(outputBytes, outputLength);
-    NSString *result = [[NSString alloc] initWithBytesNoCopy:outputBytes length:outputLength encoding:NSASCIIStringEncoding freeWhenDone:YES];
-
-#if !__has_feature(objc_arc)
-    [result autorelease];
-#endif
-    
-    return (outputLength >= 4)? result: nil;
+    if (outputLength >= 4)
+    {
+        //truncate data to match actual output length
+        outputBytes = realloc(outputBytes, outputLength);
+        return [[NSString alloc] initWithBytesNoCopy:outputBytes
+                                              length:outputLength
+                                            encoding:NSASCIIStringEncoding
+                                        freeWhenDone:YES];
+    }
+    else if (outputBytes)
+    {
+        free(outputBytes);
+    }
+    return nil;
 }
 
 - (NSString *)base64EncodedString
 {
     return [self base64EncodedStringWithWrapWidth:0];
+}
+
+@end
+
+
+@implementation NSString (Base64)
+
++ (NSString *)stringWithBase64EncodedString:(NSString *)string
+{
+    NSData *data = [NSData dataWithBase64EncodedString:string];
+    if (data)
+    {
+        return [[self alloc] initWithData:data encoding:NSUTF8StringEncoding];
+    }
+    return nil;
+}
+
+- (NSString *)base64EncodedStringWithWrapWidth:(NSUInteger)wrapWidth
+{
+    NSData *data = [self dataUsingEncoding:NSUTF8StringEncoding allowLossyConversion:YES];
+    return [data base64EncodedStringWithWrapWidth:wrapWidth];
+}
+
+- (NSString *)base64EncodedString
+{
+    NSData *data = [self dataUsingEncoding:NSUTF8StringEncoding allowLossyConversion:YES];
+    return [data base64EncodedString];
+}
+
+- (NSString *)base64DecodedString
+{
+    return [NSString stringWithBase64EncodedString:self];
+}
+
+- (NSData *)base64DecodedData
+{
+    return [NSData dataWithBase64EncodedString:self];
 }
 
 @end

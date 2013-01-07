@@ -6,7 +6,7 @@
 //
 
 #import "DataTests.h"
-#import "NSData+Base64.h"
+#import "Base64.h"
 
 
 @implementation DataTests
@@ -49,10 +49,34 @@
     NSAssert([outputString isEqualToString:inputString], @"WrappedInput test failed");
 }
 
+- (void)testZeroWrapWidth
+{
+    //set up data
+    NSString *inputString = @"Lorem ipsum dolor sit amet, consectetur adipiscing elit.";
+    NSData *inputData = [inputString dataUsingEncoding:NSUTF8StringEncoding];
+    
+    //encode
+    NSString *encodedString = [inputData base64EncodedStringWithWrapWidth:0];
+    
+    //decode
+    NSData *outputData = [NSData dataWithBase64EncodedString:encodedString];
+    NSString *outputString = [[NSString alloc] initWithData:outputData encoding:NSUTF8StringEncoding];
+    NSAssert([outputString isEqualToString:inputString], @"WrappedInput test failed");
+}
+
 - (void)testNilInput
 {
     NSData *data = [NSData dataWithBase64EncodedString:nil];
     NSAssert(data == nil, @"NilInput test failed");
+}
+
+- (void)testZeroLengthInput
+{
+    NSData *data = [NSData dataWithBase64EncodedString:@""];
+    NSAssert(data == nil, @"ZeroLengthInput test failed");
+    
+    NSString *output = [[NSMutableData data] base64EncodedString];
+    NSAssert(output == nil, @"ZeroLengthInput test failed");
 }
 
 - (void)testInvalidInput

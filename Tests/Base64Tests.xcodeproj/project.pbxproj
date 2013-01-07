@@ -7,8 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		0100CD2214C429AA00AF45C6 /* NSData+Base64.m in Sources */ = {isa = PBXBuildFile; fileRef = 0100CD1D14C429AA00AF45C6 /* NSData+Base64.m */; };
-		0100CD2714C45FF400AF45C6 /* NSString+Base64.m in Sources */ = {isa = PBXBuildFile; fileRef = 0100CD2614C45FF400AF45C6 /* NSString+Base64.m */; };
+		0100CD2214C429AA00AF45C6 /* Base64.m in Sources */ = {isa = PBXBuildFile; fileRef = 0100CD1D14C429AA00AF45C6 /* Base64.m */; };
 		0177129214BF91160050C6BC /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0177129114BF91160050C6BC /* Foundation.framework */; };
 		0177129514BF91160050C6BC /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 0177129414BF91160050C6BC /* main.m */; };
 		0177129914BF91160050C6BC /* Base64Tests.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = 0177129814BF91160050C6BC /* Base64Tests.1 */; };
@@ -30,10 +29,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		0100CD1C14C429AA00AF45C6 /* NSData+Base64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+Base64.h"; sourceTree = "<group>"; };
-		0100CD1D14C429AA00AF45C6 /* NSData+Base64.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+Base64.m"; sourceTree = "<group>"; };
-		0100CD2514C45FF400AF45C6 /* NSString+Base64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+Base64.h"; sourceTree = "<group>"; };
-		0100CD2614C45FF400AF45C6 /* NSString+Base64.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Base64.m"; sourceTree = "<group>"; };
+		0100CD1C14C429AA00AF45C6 /* Base64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Base64.h; sourceTree = "<group>"; };
+		0100CD1D14C429AA00AF45C6 /* Base64.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Base64.m; sourceTree = "<group>"; };
 		0177128D14BF91160050C6BC /* Base64Tests */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Base64Tests; sourceTree = BUILT_PRODUCTS_DIR; };
 		0177129114BF91160050C6BC /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		0177129414BF91160050C6BC /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = main.m; path = UnitTests/main.m; sourceTree = SOURCE_ROOT; };
@@ -60,10 +57,8 @@
 		0100CD1B14C429AA00AF45C6 /* Base64 */ = {
 			isa = PBXGroup;
 			children = (
-				0100CD1C14C429AA00AF45C6 /* NSData+Base64.h */,
-				0100CD1D14C429AA00AF45C6 /* NSData+Base64.m */,
-				0100CD2514C45FF400AF45C6 /* NSString+Base64.h */,
-				0100CD2614C45FF400AF45C6 /* NSString+Base64.m */,
+				0100CD1C14C429AA00AF45C6 /* Base64.h */,
+				0100CD1D14C429AA00AF45C6 /* Base64.m */,
 			);
 			name = Base64;
 			path = ../Base64;
@@ -151,7 +146,7 @@
 		0177128414BF91160050C6BC /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0430;
+				LastUpgradeCheck = 0450;
 			};
 			buildConfigurationList = 0177128714BF91160050C6BC /* Build configuration list for PBXProject "Base64Tests" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -178,8 +173,7 @@
 				0177129514BF91160050C6BC /* main.m in Sources */,
 				017712AD14BF92620050C6BC /* DataTests.m in Sources */,
 				017712B114BF92D00050C6BC /* TestCase.m in Sources */,
-				0100CD2214C429AA00AF45C6 /* NSData+Base64.m in Sources */,
-				0100CD2714C45FF400AF45C6 /* NSString+Base64.m in Sources */,
+				0100CD2214C429AA00AF45C6 /* Base64.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -202,6 +196,7 @@
 					"$(inherited)",
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
@@ -209,6 +204,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				ONLY_ACTIVE_ARCH = YES;
+				RUN_CLANG_STATIC_ANALYZER = YES;
 				SDKROOT = macosx;
 			};
 			name = Debug;
@@ -223,12 +219,14 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				RUN_CLANG_STATIC_ANALYZER = YES;
 				SDKROOT = macosx;
 			};
 			name = Release;

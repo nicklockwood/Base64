@@ -1,7 +1,7 @@
 //
-//  NSString+Base64.m
+//  Base64.h
 //
-//  Version 1.0.2
+//  Version 1.1
 //
 //  Created by Nick Lockwood on 12/01/2012.
 //  Copyright (C) 2012 Charcoal Design
@@ -30,47 +30,24 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 
-#import "NSString+Base64.h"
-#import "NSData+Base64.h"
+#import <Foundation/Foundation.h>
 
-@implementation NSString (Base64)
 
-+ (NSString *)stringWithBase64EncodedString:(NSString *)string
-{
-    NSData *data = [NSData dataWithBase64EncodedString:string];
-    if (data)
-    {
-        NSString *result = [[self alloc] initWithData:data encoding:NSUTF8StringEncoding];
-        
-#if !__has_feature(objc_arc)
-        [result autorelease];
-#endif
-        
-        return result;
-    }
-    return nil;
-}
+@interface NSData (Base64)
 
-- (NSString *)base64EncodedStringWithWrapWidth:(NSUInteger)wrapWidth
-{
-    NSData *data = [self dataUsingEncoding:NSUTF8StringEncoding allowLossyConversion:YES];
-    return [data base64EncodedStringWithWrapWidth:wrapWidth];
-}
++ (NSData *)dataWithBase64EncodedString:(NSString *)string;
+- (NSString *)base64EncodedStringWithWrapWidth:(NSUInteger)wrapWidth;
+- (NSString *)base64EncodedString;
 
-- (NSString *)base64EncodedString
-{
-    NSData *data = [self dataUsingEncoding:NSUTF8StringEncoding allowLossyConversion:YES];
-    return [data base64EncodedString];
-}
+@end
 
-- (NSString *)base64DecodedString
-{
-    return [NSString stringWithBase64EncodedString:self];
-}
 
-- (NSData *)base64DecodedData
-{
-    return [NSData dataWithBase64EncodedString:self];
-}
+@interface NSString (Base64)
+
++ (NSString *)stringWithBase64EncodedString:(NSString *)string;
+- (NSString *)base64EncodedStringWithWrapWidth:(NSUInteger)wrapWidth;
+- (NSString *)base64EncodedString;
+- (NSString *)base64DecodedString;
+- (NSData *)base64DecodedData;
 
 @end
