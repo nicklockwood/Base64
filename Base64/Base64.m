@@ -45,15 +45,30 @@
 {
     const char lookup[] =
     {
-        99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 
-        99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 
-        99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 62, 99, 99, 99, 63, 
-        52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 99, 99, 99, 99, 99, 99, 
-        99,  0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 
-        15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 99, 99, 99, 99, 99, 
-        99, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 
+        99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99,
+        99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99,
+        99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 62, 99, 99, 99, 63,
+        52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 99, 99, 99, 99, 99, 99,
+        99,  0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14,
+        15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 99, 99, 99, 99, 99,
+        99, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40,
         41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 99, 99, 99, 99, 99
     };
+    
+    // fix padding
+    switch(string.length % 4)
+    {
+        case 0:
+            break;
+        case 2:
+            string = [string stringByAppendingString:@"=="];
+            break;
+        case 3:
+            string = [string stringByAppendingString:@"="];
+            break;
+        default:
+            return nil;
+    }
     
     NSData *inputData = [string dataUsingEncoding:NSASCIIStringEncoding allowLossyConversion:YES];
     long long inputLength = [inputData length];
@@ -62,7 +77,7 @@
     long long maxOutputLength = (inputLength / 4 + 1) * 3;
     NSMutableData *outputData = [NSMutableData dataWithLength:maxOutputLength];
     unsigned char *outputBytes = (unsigned char *)[outputData mutableBytes];
-
+    
     int accumulator = 0;
     long long outputLength = 0;
     unsigned char accumulated[] = {0, 0, 0, 0};
@@ -74,8 +89,8 @@
             accumulated[accumulator] = decoded;
             if (accumulator == 3)
             {
-                outputBytes[outputLength++] = (accumulated[0] << 2) | (accumulated[1] >> 4);  
-                outputBytes[outputLength++] = (accumulated[1] << 4) | (accumulated[2] >> 2);  
+                outputBytes[outputLength++] = (accumulated[0] << 2) | (accumulated[1] >> 4);
+                outputBytes[outputLength++] = (accumulated[1] << 4) | (accumulated[2] >> 2);
                 outputBytes[outputLength++] = (accumulated[2] << 6) | accumulated[3];
             }
             accumulator = (accumulator + 1) % 4;
@@ -92,12 +107,15 @@
     return outputLength? outputData: nil;
 }
 
-- (NSString *)base64EncodedStringWithWrapWidth:(NSUInteger)wrapWidth
+- (NSString *)base64EncodedStringWithWrapWidth:(NSUInteger)wrapWidth urlSafe:(BOOL)urlSafe noPad:(BOOL)noPad
 {
     //ensure wrapWidth is a multiple of 4
     wrapWidth = (wrapWidth / 4) * 4;
     
-    const char lookup[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+    const char table[]        = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+    const char urlSafeTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
+    
+    const char* lookup = urlSafe ? urlSafeTable : table;
     
     long long inputLength = [self length];
     const unsigned char *inputBytes = [self bytes];
@@ -130,18 +148,26 @@
         outputBytes[outputLength++] = lookup[(inputBytes[i] & 0xFC) >> 2];
         outputBytes[outputLength++] = lookup[((inputBytes[i] & 0x03) << 4) | ((inputBytes[i + 1] & 0xF0) >> 4)];
         outputBytes[outputLength++] = lookup[(inputBytes[i + 1] & 0x0F) << 2];
-        outputBytes[outputLength++] =   '=';
+        
+        if(!noPad)
+        {
+            outputBytes[outputLength++] = '=';
+        }
     }
     else if (i == inputLength - 1)
     {
         // == terminator
         outputBytes[outputLength++] = lookup[(inputBytes[i] & 0xFC) >> 2];
         outputBytes[outputLength++] = lookup[(inputBytes[i] & 0x03) << 4];
-        outputBytes[outputLength++] = '=';
-        outputBytes[outputLength++] = '=';
+        
+        if(!noPad)
+        {
+            outputBytes[outputLength++] = '=';
+            outputBytes[outputLength++] = '=';
+        }
     }
     
-    if (outputLength >= 4)
+    if (outputLength >= 4 || (noPad && outputLength >= 2))
     {
         //truncate data to match actual output length
         outputBytes = realloc(outputBytes, outputLength);
@@ -157,9 +183,19 @@
     return nil;
 }
 
+- (NSString *)base64EncodedStringWithWrapWidth:(NSUInteger)wrapWidth
+{
+    return [self base64EncodedStringWithWrapWidth:wrapWidth urlSafe:NO noPad:NO];
+}
+
 - (NSString *)base64EncodedString
 {
-    return [self base64EncodedStringWithWrapWidth:0];
+    return [self base64EncodedStringWithWrapWidth:0 urlSafe:NO noPad:NO];
+}
+
+- (NSString *)urlSafeBase64EncodedString
+{
+    return [self base64EncodedStringWithWrapWidth:0 urlSafe:YES noPad:YES];
 }
 
 @end
@@ -177,16 +213,27 @@
     return nil;
 }
 
-- (NSString *)base64EncodedStringWithWrapWidth:(NSUInteger)wrapWidth
+- (NSString *)base64EncodedStringWithWrapWidth:(NSUInteger)wrapWidth urlSafe:(BOOL)urlSafe noPad:(BOOL)noPad
 {
     NSData *data = [self dataUsingEncoding:NSUTF8StringEncoding allowLossyConversion:YES];
-    return [data base64EncodedStringWithWrapWidth:wrapWidth];
+    return [data base64EncodedStringWithWrapWidth:wrapWidth urlSafe:urlSafe noPad:noPad];
+}
+
+- (NSString *)base64EncodedStringWithWrapWidth:(NSUInteger)wrapWidth
+{
+    return [self base64EncodedStringWithWrapWidth:wrapWidth urlSafe:NO noPad:NO];
 }
 
 - (NSString *)base64EncodedString
 {
     NSData *data = [self dataUsingEncoding:NSUTF8StringEncoding allowLossyConversion:YES];
     return [data base64EncodedString];
+}
+
+- (NSString *)urlSafeBase64EncodedString
+{
+    NSData *data = [self dataUsingEncoding:NSUTF8StringEncoding allowLossyConversion:YES];
+    return [data urlSafeBase64EncodedString];
 }
 
 - (NSString *)base64DecodedString
