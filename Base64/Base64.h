@@ -36,8 +36,10 @@
 @interface NSData (Base64)
 
 + (NSData *)dataWithBase64EncodedString:(NSString *)string;
+- (NSString *)base64EncodedStringWithWrapWidth:(NSUInteger)wrapWidth urlSafe:(BOOL)urlSafe noPad:(BOOL)noPad;
 - (NSString *)base64EncodedStringWithWrapWidth:(NSUInteger)wrapWidth;
 - (NSString *)base64EncodedString;
+- (NSString *)urlSafeBase64EncodedString;
 
 @end
 
@@ -45,8 +47,10 @@
 @interface NSString (Base64)
 
 + (NSString *)stringWithBase64EncodedString:(NSString *)string;
+- (NSString *)base64EncodedStringWithWrapWidth:(NSUInteger)wrapWidth urlSafe:(BOOL)urlSafe noPad:(BOOL)noPad;
 - (NSString *)base64EncodedStringWithWrapWidth:(NSUInteger)wrapWidth;
 - (NSString *)base64EncodedString;
+- (NSString *)urlSafeBase64EncodedString;
 - (NSString *)base64DecodedString;
 - (NSData *)base64DecodedData;
 
