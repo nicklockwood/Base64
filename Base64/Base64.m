@@ -56,19 +56,19 @@
     };
     
     NSData *inputData = [string dataUsingEncoding:NSASCIIStringEncoding allowLossyConversion:YES];
-    long long inputLength = [inputData length];
+    NSUInteger inputLength = [inputData length];
     const unsigned char *inputBytes = [inputData bytes];
     
-    long long maxOutputLength = (inputLength / 4 + 1) * 3;
+    NSUInteger maxOutputLength = (inputLength / 4 + 1) * 3;
     NSMutableData *outputData = [NSMutableData dataWithLength:maxOutputLength];
     unsigned char *outputBytes = (unsigned char *)[outputData mutableBytes];
 
-    int accumulator = 0;
-    long long outputLength = 0;
+    NSUInteger accumulator = 0;
+    NSUInteger outputLength = 0;
     unsigned char accumulated[] = {0, 0, 0, 0};
-    for (long long i = 0; i < inputLength; i++)
+    for (NSUInteger i = 0; i < inputLength; i++)
     {
-        unsigned char decoded = lookup[inputBytes[i] & 0x7F];
+				unsigned char decoded = lookup[inputBytes[i] & 0x7F];
         if (decoded != 99)
         {
             accumulated[accumulator] = decoded;
@@ -99,15 +99,15 @@
     
     const char lookup[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
     
-    long long inputLength = [self length];
+    NSUInteger inputLength = [self length];
     const unsigned char *inputBytes = [self bytes];
     
-    long long maxOutputLength = (inputLength / 3 + 1) * 4;
+    NSUInteger maxOutputLength = (inputLength / 3 + 1) * 4;
     maxOutputLength += wrapWidth? (maxOutputLength / wrapWidth) * 2: 0;
     unsigned char *outputBytes = (unsigned char *)malloc(maxOutputLength);
     
-    long long i;
-    long long outputLength = 0;
+    NSUInteger i;
+    NSUInteger outputLength = 0;
     for (i = 0; i < inputLength - 2; i += 3)
     {
         outputBytes[outputLength++] = lookup[(inputBytes[i] & 0xFC) >> 2];
