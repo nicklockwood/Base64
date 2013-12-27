@@ -108,7 +108,7 @@
     
     NSUInteger i;
     NSUInteger outputLength = 0;
-    for (i = 0; i < inputLength - 2; i += 3)
+    for (i = 0; i + 2 < inputLength; i += 3)
     {
         outputBytes[outputLength++] = lookup[(inputBytes[i] & 0xFC) >> 2];
         outputBytes[outputLength++] = lookup[((inputBytes[i] & 0x03) << 4) | ((inputBytes[i + 1] & 0xF0) >> 4)];
