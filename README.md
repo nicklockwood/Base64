@@ -1,3 +1,9 @@
+NOTE: As of iOS 7 and Mac OS 10.9, this library is not longer needed
+----------------------------------------------------------------------
+
+In the iOS 7 and Mac OS 10.9 SDKs, Apple introduced new base64 methods on NSData that make it unnecessary to use a 3rd party base 64 decoding library. What's more, they exposed access to private base64 methods that are retrospectively available back as far as IOS 4 and Mac OS 6.
+
+
 Purpose
 --------------
 
