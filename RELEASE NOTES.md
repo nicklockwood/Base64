@@ -1,3 +1,8 @@
+Version 1.2
+
+- Updated code to use native iOS and Mac OS Base64 coding methods internally. This should improve performance slightly, but has no effect on behaviour.
+- Now complies with -Weverything warning level
+
 Version 1.1
 
 - Base64 now requires ARC (see README for details)

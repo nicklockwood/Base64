@@ -29,7 +29,7 @@
 
 - (void)testWrappedInput
 {
-    NSInteger wrapWidth = 8; // must be multiple of 4
+    NSUInteger wrapWidth = 8; // must be multiple of 4
     
     //set up data
     NSString *inputString = @"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque ac quam non ipsum vestibulum porta ac id ipsum. Morbi sed enim purus. Fusce elementum dui sed nisi tincidunt feugiat interdum felis malesuada. Sed ipsum enim, mollis id adipiscing eu, eleifend eget neque. Nulla quis nunc a nunc pellentesque adipiscing nec non leo. Morbi ut nisi sem, in cursus erat. Praesent eu nibh justo, nec suscipit nisl. Suspendisse eget elit tellus, at rhoncus urna. Quisque imperdiet lobortis sagittis. Duis congue venenatis faucibus. Sed fermentum, ligula venenatis molestie mattis, sem justo ultrices turpis, mattis condimentum quam nunc eu purus. Nulla facilisi. Donec sodales nulla sed diam iaculis quis suscipit quam rhoncus. Nam tincidunt dui sit amet tortor posuere non interdum felis venenatis. In sollicitudin cursus felis vitae convallis. Etiam justo elit, vestibulum sit amet fringilla vel, vestibulum et ante.";
@@ -41,7 +41,7 @@
     
     //wrap width
     NSArray *lines = [encodedString componentsSeparatedByString:@"\r\n"];
-    NSAssert([[lines valueForKeyPath:@"@max.length"] intValue] == wrapWidth, @"WrappedInput test failed");
+    NSAssert([[lines valueForKeyPath:@"@max.length"] unsignedIntegerValue] == wrapWidth, @"WrappedInput test failed");
     
     //decode
     NSData *outputData = [NSData dataWithBase64EncodedString:encodedString];
@@ -128,5 +128,14 @@
     NSString *outputString = [[NSString alloc] initWithData:outputData encoding:NSUTF8StringEncoding]; 
     NSAssert([outputString isEqualToString:inputString], @"EdgeCase2 test failed");
 }
+
+- (void)testEdgeCase3
+{
+    //set up data (10 chars)
+    NSString *inputString = @"VEVTVCBCSUM=";
+    NSString *outputString = [NSString stringWithBase64EncodedString:inputString];
+    NSAssert([outputString isEqualToString:@"TEST BIC"], @"EdgeCase3 test failed");
+}
+
 
 @end

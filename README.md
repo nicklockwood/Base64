@@ -3,6 +3,8 @@ NOTE: As of iOS 7 and Mac OS 10.9, this library is not longer needed
 
 In the iOS 7 and Mac OS 10.9 SDKs, Apple introduced new base64 methods on NSData that make it unnecessary to use a 3rd party base 64 decoding library. What's more, they exposed access to private base64 methods that are retrospectively available back as far as IOS 4 and Mac OS 6.
 
+Although use of this library is no longer required, you may still find it useful, as it abstracts the complexity of supporting the deprecated Base64 methods for older OS versions, and also provides some additional utility functions, such as arbitrary wrap widths and NSString encoding.
+
 
 Purpose
 --------------
@@ -13,7 +15,7 @@ Base64 is a set of categories that provide methods to encode and decode data as 
 Supported OS & SDK Versions
 -----------------------------
 
-* Supported build target - iOS 6.0 / Mac OS 10.8 (Xcode 4.5, Apple LLVM compiler 4.1)
+* Supported build target - iOS 7.0 / Mac OS 10.9 (Xcode 5.0, Apple LLVM compiler 5.0)
 * Earliest supported deployment target - iOS 5.0 / Mac OS 10.7
 * Earliest compatible deployment target - iOS 4.3 / Mac OS 10.6
 

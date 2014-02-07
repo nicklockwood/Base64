@@ -1,7 +1,7 @@
 //
 //  Base64.m
 //
-//  Version 1.1
+//  Version 1.2
 //
 //  Created by Nick Lockwood on 12/01/2012.
 //  Copyright (C) 2012 Charcoal Design
@@ -21,7 +21,7 @@
 //
 //  1. The origin of this software must not be misrepresented; you must not
 //  claim that you wrote the original software. If you use this software
-//  in a product, an acknowledgment in the product documentation would be
+//  in a product, an aacknowledgment in the product documentation would be
 //  appreciated but is not required.
 //
 //  2. Altered source versions must be plainly marked as such, and must not be
@@ -31,6 +31,9 @@
 //
 
 #import "Base64.h"
+
+
+#pragma GCC diagnostic ignored "-Wselector"
 
 
 #import <Availability.h>
@@ -43,118 +46,80 @@
 
 + (NSData *)dataWithBase64EncodedString:(NSString *)string
 {
-    const char lookup[] =
-    {
-        99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 
-        99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 
-        99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 62, 99, 99, 99, 63, 
-        52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 99, 99, 99, 99, 99, 99, 
-        99,  0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 
-        15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 99, 99, 99, 99, 99, 
-        99, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 
-        41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 99, 99, 99, 99, 99
-    };
+    if (![string length]) return nil;
     
-    NSData *inputData = [string dataUsingEncoding:NSASCIIStringEncoding allowLossyConversion:YES];
-    NSUInteger inputLength = [inputData length];
-    const unsigned char *inputBytes = [inputData bytes];
+    NSData *decoded = nil;
     
-    NSUInteger maxOutputLength = (inputLength / 4 + 1) * 3;
-    NSMutableData *outputData = [NSMutableData dataWithLength:maxOutputLength];
-    unsigned char *outputBytes = (unsigned char *)[outputData mutableBytes];
-
-    NSUInteger accumulator = 0;
-    NSUInteger outputLength = 0;
-    unsigned char accumulated[] = {0, 0, 0, 0};
-    for (NSUInteger i = 0; i < inputLength; i++)
+#if __MAC_OS_X_VERSION_MIN_REQUIRED < __MAC_10_9 || __IPHONE_OS_VERSION_MIN_REQUIRED < __IPHONE_7_0
+    
+    if (![NSData instancesRespondToSelector:@selector(initWithBase64EncodedString:options:)])
     {
-				unsigned char decoded = lookup[inputBytes[i] & 0x7F];
-        if (decoded != 99)
-        {
-            accumulated[accumulator] = decoded;
-            if (accumulator == 3)
-            {
-                outputBytes[outputLength++] = (accumulated[0] << 2) | (accumulated[1] >> 4);  
-                outputBytes[outputLength++] = (accumulated[1] << 4) | (accumulated[2] >> 2);  
-                outputBytes[outputLength++] = (accumulated[2] << 6) | accumulated[3];
-            }
-            accumulator = (accumulator + 1) % 4;
-        }
+        decoded = [[self alloc] initWithBase64Encoding:[string stringByReplacingOccurrencesOfString:@"[^A-Za-z0-9+/=]" withString:@"" options:NSRegularExpressionSearch range:NSMakeRange(0, [string length])]];
+    }
+    else
+    
+#endif
+        
+    {
+        decoded = [[self alloc] initWithBase64EncodedString:string options:NSDataBase64DecodingIgnoreUnknownCharacters];
     }
     
-    //handle left-over data
-    if (accumulator > 0) outputBytes[outputLength] = (accumulated[0] << 2) | (accumulated[1] >> 4);
-    if (accumulator > 1) outputBytes[++outputLength] = (accumulated[1] << 4) | (accumulated[2] >> 2);
-    if (accumulator > 2) outputLength++;
-    
-    //truncate data to match actual output length
-    outputData.length = outputLength;
-    return outputLength? outputData: nil;
+    return [decoded length]? decoded: nil;
 }
 
 - (NSString *)base64EncodedStringWithWrapWidth:(NSUInteger)wrapWidth
 {
-    //ensure wrapWidth is a multiple of 4
-    wrapWidth = (wrapWidth / 4) * 4;
+    if (![self length]) return nil;
     
-    const char lookup[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+    NSString *encoded = nil;
     
-    NSUInteger inputLength = [self length];
-    const unsigned char *inputBytes = [self bytes];
+#if __MAC_OS_X_VERSION_MIN_REQUIRED < __MAC_10_9 || __IPHONE_OS_VERSION_MIN_REQUIRED < __IPHONE_7_0
     
-    NSUInteger maxOutputLength = (inputLength / 3 + 1) * 4;
-    maxOutputLength += wrapWidth? (maxOutputLength / wrapWidth) * 2: 0;
-    unsigned char *outputBytes = (unsigned char *)malloc(maxOutputLength);
-    
-    NSUInteger i;
-    NSUInteger outputLength = 0;
-    for (i = 0; i + 2 < inputLength; i += 3)
+    if (![NSData instancesRespondToSelector:@selector(base64EncodedStringWithOptions:)])
     {
-        outputBytes[outputLength++] = lookup[(inputBytes[i] & 0xFC) >> 2];
-        outputBytes[outputLength++] = lookup[((inputBytes[i] & 0x03) << 4) | ((inputBytes[i + 1] & 0xF0) >> 4)];
-        outputBytes[outputLength++] = lookup[((inputBytes[i + 1] & 0x0F) << 2) | ((inputBytes[i + 2] & 0xC0) >> 6)];
-        outputBytes[outputLength++] = lookup[inputBytes[i + 2] & 0x3F];
-        
-        //add line break
-        if (wrapWidth && (outputLength + 2) % (wrapWidth + 2) == 0)
+        encoded = [self base64Encoding];
+    }
+    else
+    
+#endif
+    
+    {
+        switch (wrapWidth)
         {
-            outputBytes[outputLength++] = '\r';
-            outputBytes[outputLength++] = '\n';
+            case 64:
+            {
+                return [self base64EncodedStringWithOptions:NSDataBase64Encoding64CharacterLineLength];
+            }
+            case 76:
+            {
+                return [self base64EncodedStringWithOptions:NSDataBase64Encoding76CharacterLineLength];
+            }
+            default:
+            {
+                encoded = [self base64EncodedStringWithOptions:(NSDataBase64EncodingOptions)0];
+            }
         }
     }
     
-    //handle left-over data
-    if (i == inputLength - 2)
+    if (!wrapWidth || wrapWidth >= [encoded length])
     {
-        // = terminator
-        outputBytes[outputLength++] = lookup[(inputBytes[i] & 0xFC) >> 2];
-        outputBytes[outputLength++] = lookup[((inputBytes[i] & 0x03) << 4) | ((inputBytes[i + 1] & 0xF0) >> 4)];
-        outputBytes[outputLength++] = lookup[(inputBytes[i + 1] & 0x0F) << 2];
-        outputBytes[outputLength++] =   '=';
-    }
-    else if (i == inputLength - 1)
-    {
-        // == terminator
-        outputBytes[outputLength++] = lookup[(inputBytes[i] & 0xFC) >> 2];
-        outputBytes[outputLength++] = lookup[(inputBytes[i] & 0x03) << 4];
-        outputBytes[outputLength++] = '=';
-        outputBytes[outputLength++] = '=';
+        return encoded;
     }
     
-    if (outputLength >= 4)
+    wrapWidth = (wrapWidth / 4) * 4;
+    NSMutableString *result = [NSMutableString string];
+    for (NSUInteger i = 0; i < [encoded length]; i+= wrapWidth)
     {
-        //truncate data to match actual output length
-        outputBytes = realloc(outputBytes, outputLength);
-        return [[NSString alloc] initWithBytesNoCopy:outputBytes
-                                              length:outputLength
-                                            encoding:NSASCIIStringEncoding
-                                        freeWhenDone:YES];
+        if (i + wrapWidth >= [encoded length])
+        {
+            [result appendString:[encoded substringFromIndex:i]];
+            break;
+        }
+        [result appendString:[encoded substringWithRange:NSMakeRange(i, wrapWidth)]];
+        [result appendString:@"\r\n"];
     }
-    else if (outputBytes)
-    {
-        free(outputBytes);
-    }
-    return nil;
+    
+    return result;
 }
 
 - (NSString *)base64EncodedString

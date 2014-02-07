@@ -1,6 +1,6 @@
 Base64
 
-Version 1.1, January 7th, 2013
+Version 1.2, Feburary 7th, 2014
 
 Copyright (C) 2012 Charcoal Design
 
