@@ -49,8 +49,10 @@
     if (![string length]) return nil;
     
     NSData *decoded = nil;
+
     
-#if __MAC_OS_X_VERSION_MIN_REQUIRED < __MAC_10_9 || __IPHONE_OS_VERSION_MIN_REQUIRED < __IPHONE_7_0
+#ifdef __MAC_OS_X_VERSION_MIN_REQUIRED
+    #if __MAC_OS_X_VERSION_MIN_REQUIRED < __MAC_10_9 || __IPHONE_OS_VERSION_MIN_REQUIRED < __IPHONE_7_0
     
     if (![NSData instancesRespondToSelector:@selector(initWithBase64EncodedString:options:)])
     {
@@ -58,6 +60,7 @@
     }
     else
     
+    #endif
 #endif
         
     {
@@ -73,7 +76,8 @@
     
     NSString *encoded = nil;
     
-#if __MAC_OS_X_VERSION_MIN_REQUIRED < __MAC_10_9 || __IPHONE_OS_VERSION_MIN_REQUIRED < __IPHONE_7_0
+#ifdef __MAC_OS_X_VERSION_MIN_REQUIRED
+    #if __MAC_OS_X_VERSION_MIN_REQUIRED < __MAC_10_9 || __IPHONE_OS_VERSION_MIN_REQUIRED < __IPHONE_7_0
     
     if (![NSData instancesRespondToSelector:@selector(base64EncodedStringWithOptions:)])
     {
@@ -81,6 +85,7 @@
     }
     else
     
+    #endif
 #endif
     
     {
