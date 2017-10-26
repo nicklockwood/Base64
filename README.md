@@ -1,3 +1,10 @@
+***************
+WARNING: THIS PROJECT IS DEPRECATED
+====================================
+It will not receive any future updates or bug fixes. If you are using it, please migrate to another solution.
+***************
+
+
 NOTE: As of iOS 7 and Mac OS 10.9, this library is not longer needed
 ----------------------------------------------------------------------
 
